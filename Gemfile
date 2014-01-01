@@ -24,6 +24,11 @@ gem 'jquery-rails'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 1.2'
 
+gem 'ember-rails'
+gem 'ember-source', '1.2.0'
+
+gem 'active_model_serializers'
+
 group :test, :development do
   gem 'rspec-rails'
   gem 'pry-rails'

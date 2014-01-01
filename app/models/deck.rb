@@ -8,7 +8,7 @@ class Deck < ActiveRecord::Base
 
   private
   def build_deck
-    Card.find(:all).each do |card|
+    Card.all.each do |card|
       self.cards << card
     end
   end
