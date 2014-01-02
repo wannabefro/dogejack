@@ -29,6 +29,10 @@ gem 'ember-source', '1.2.0'
 
 gem 'active_model_serializers'
 
+gem 'state_machine'
+
+gem 'bootstrap-sass', '~> 3.0.3.0'
+
 group :test, :development do
   gem 'rspec-rails'
   gem 'pry-rails'
@@ -44,7 +48,7 @@ group :development do
   gem 'quiet_assets'
 end
 
-gem 'devise'
+gem 'devise', '3.0.0'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.

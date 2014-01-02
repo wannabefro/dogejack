@@ -18,6 +18,9 @@
 //= require ember-data
 //= require_self
 //= require dogejack
+//= require bootstrap
+//= require vendor/ember-simple-auth
+//= require vendor/html5shiv
 
 // for more details see: http://emberjs.com/guides/application/
 App = Ember.Application.create();

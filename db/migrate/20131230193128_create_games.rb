@@ -4,6 +4,7 @@ class CreateGames < ActiveRecord::Migration
       t.integer :user_id, null: false, index: true
       t.string :player_cards, default: [], array: true
       t.string :dealer_cards, default: [], array: true
+      t.string :state, default: 'started'
 
       t.timestamps
     end

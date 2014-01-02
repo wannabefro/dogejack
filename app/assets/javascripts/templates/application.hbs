@@ -1,0 +1,36 @@
+<nav class="navbar-square navbar-default" role="navigation">
+  <div class='container'>
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      {{#link-to 'home' classNames='navbar-brand'}}DogeJack{{/link-to}}
+    </div>
+
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#">Play Now</a></li>
+        <li><a href="#">About</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <!-- <li><a href="#">Sign Up</a></li> -->
+        <form class="form-inline form-square navbar-btn" {{action login on="submit"}}>
+          <div class="form-group">
+            {{input class="username form-control" value=loginInfo type="text" placeholder="Username or Email"}}
+          </div>
+          <div class="form-group">
+            {{input class="password form-control" value=password type="password" placeholder="Password"}}
+          </div>
+          {{input class="submit btn btn-primary" type="submit" value="Login"}}
+        </form>
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="container">
+<h1>Welcome To Dogejack</h1>
+  {{outlet}}
+</div>
