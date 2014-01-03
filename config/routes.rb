@@ -1,6 +1,10 @@
 Dogejack::Application.routes.draw do
+  devise_for :users, path_prefix: 'api', controllers: { sessions: 'sessions', registrations: 'registrations' }
   namespace :api do
-    devise_for :users
+    devise_scope :user do
+      post "registrations" => "registrations#create"
+      post "sign-in" => "sessions#create"
+    end
   end
 
   root 'home#index'

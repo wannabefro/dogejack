@@ -1,6 +1,4 @@
-// Version: 0.0.11
-// Last commit: 877c4a4 (2013-12-03 20:34:53 +0100)
-
+// Last commit: 
 
 (function() {
 'use strict';
@@ -41,10 +39,10 @@ Ember.SimpleAuth = {};
 **/
 Ember.SimpleAuth.setup = function(container, application, options) {
   options = options || {};
-  this.routeAfterLogin      = options.routeAfterLogin || 'index';
-  this.routeAfterLogout     = options.routeAfterLogout || 'index';
+  this.routeAfterLogin      = options.routeAfterLogin || 'home';
+  this.routeAfterLogout     = options.routeAfterLogout || 'home';
   this.loginRoute           = options.loginRoute || 'login';
-  this.serverTokenEndpoint  = options.serverTokenEndpoint || '/token';
+  this.serverTokenEndpoint  = options.serverTokenEndpoint || '/api/sign-in';
   this.autoRefreshToken     = Ember.isEmpty(options.autoRefreshToken) ? true : !!options.autoRefreshToken;
   this.crossOriginWhitelist = Ember.A(options.crossOriginWhitelist || []);
 
@@ -421,14 +419,19 @@ Ember.SimpleAuth.LoginControllerMixin = Ember.Mixin.create({
     @return {Object} The request options to be passed to Ember.$.ajax (see http://api.jquery.com/jQuery.ajax/ for detailed documentation)
   */
   tokenRequestOptions: function(identification, password, client_id, client_secret) {
-    var postData = ['grant_type=password', 'username=' + identification, 'password=' + password];
+    var postData = {
+        'grant_type':   'password',
+        'username':     identification,
+        'password':     password
+    };
+
     if (!Ember.isEmpty(client_id)) {
-      postData.push('client_id=' + client_id);
-      if (!Ember.isEmpty(client_id)) {
-        postData.push('client_secret=' + client_secret);
+      postData.client_id = client_id;
+      if (!Ember.isEmpty(client_secret)) {
+        postData.client_secret = client_secret;
       }
     }
-    postData = postData.join('&');
+
     return { type: 'POST', data: postData, contentType: 'application/x-www-form-urlencoded' };
   },
   actions: {
@@ -436,9 +439,11 @@ Ember.SimpleAuth.LoginControllerMixin = Ember.Mixin.create({
       @method login
       @private
     */
-    login: function() {
+    login: function(identification, password) {
       var _this = this;
-      var data = this.getProperties('identification', 'password', 'client_id', 'client_secret');
+      var data = this.getProperties('client_id', 'client_secret');
+      data.identification = identification;
+      data.password = password;
       if (!Ember.isEmpty(data.identification) && !Ember.isEmpty(data.password)) {
         this.set('password', undefined);
         var requestOptions = this.tokenRequestOptions(data.identification, data.password, data.client_id, data.client_secret);
@@ -547,7 +552,8 @@ Ember.SimpleAuth.ApplicationRouteMixin = Ember.Mixin.create({
 
       @method loginFailed
     */
-    loginFailed: function() {
+    loginFailed: function(error) {
+      this.controllerFor('application').set('errors', error.responseJSON.errors.username);
     },
 
     /**
