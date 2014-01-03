@@ -2,6 +2,7 @@
 <hr>
 <div class="form-square horizontal">
   <div {{bind-attr class=":form-group errors.username:has-error"}}>
+    {{log errors}}
     {{input type="text" value=username class="form-control" placeholder="username"}}
     {{#if errors.username }}
     <span class="help-block">{{format-error errors.username}}</span>

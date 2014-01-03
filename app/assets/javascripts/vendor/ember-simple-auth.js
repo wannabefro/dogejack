@@ -42,7 +42,7 @@ Ember.SimpleAuth.setup = function(container, application, options) {
   this.routeAfterLogin      = options.routeAfterLogin || 'home';
   this.routeAfterLogout     = options.routeAfterLogout || 'home';
   this.loginRoute           = options.loginRoute || 'login';
-  this.serverTokenEndpoint  = options.serverTokenEndpoint || '/api/sign-in';
+  this.serverTokenEndpoint  = options.serverTokenEndpoint || '/api/sign_in';
   this.autoRefreshToken     = Ember.isEmpty(options.autoRefreshToken) ? true : !!options.autoRefreshToken;
   this.crossOriginWhitelist = Ember.A(options.crossOriginWhitelist || []);
 
@@ -51,6 +51,13 @@ Ember.SimpleAuth.setup = function(container, application, options) {
   Ember.$.each(['model', 'controller', 'view', 'route'], function(i, component) {
     application.inject(component, 'session', 'simple_auth:session');
   });
+
+  if (session.user){
+    var store = container.lookup('store:main');
+    var user = JSON.parse(session.user);
+    store.push('user', user);
+    container.lookup('controller:application').set('currentUser', store.getById('user', user.id));
+  }
 
   Ember.$.ajaxPrefilter(function(options, originalOptions, jqXHR) {
     if (!Ember.isEmpty(session.get('authToken')) && Ember.SimpleAuth.includeAuthorizationHeader(options.url)) {
@@ -184,6 +191,7 @@ Ember.SimpleAuth.Session = Ember.Object.extend({
   setup: function(data) {
     data = data || {};
     this.setProperties({
+      user:            JSON.stringify(data.user),
       authToken:       data.access_token,
       refreshToken:    (data.refresh_token || this.get('refreshToken')),
       authTokenExpiry: (data.expires_in > 0 ? data.expires_in * 1000 : this.get('authTokenExpiry')) || 0
@@ -198,6 +206,7 @@ Ember.SimpleAuth.Session = Ember.Object.extend({
   */
   destroy: function() {
     this.setProperties({
+      user:            undefined,
       authToken:       undefined,
       refreshToken:    undefined,
       authTokenExpiry: undefined
@@ -220,6 +229,7 @@ Ember.SimpleAuth.Session = Ember.Object.extend({
   */
   syncProperties: function() {
     this.setProperties({
+      user:            this.load('user'),
       authToken:       this.load('authToken'),
       refreshToken:    this.load('refreshToken'),
       authTokenExpiry: this.load('authTokenExpiry')
@@ -250,6 +260,14 @@ Ember.SimpleAuth.Session = Ember.Object.extend({
   store: function(property) {
     document.cookie = property + '=' + encodeURIComponent(this.get(property) || '');
   },
+
+  /**
+    @method userObserver
+    @private
+  */
+  userObserver: Ember.observer(function() {
+    this.store('user');
+  }, 'user'),
 
   /**
     @method authTokenObserver
@@ -451,6 +469,8 @@ Ember.SimpleAuth.LoginControllerMixin = Ember.Mixin.create({
           Ember.run(function() {
             _this.get('session').setup(response);
             _this.send('loginSucceeded');
+            _this.store.push('user', response.user);
+            _this.get('controllers.application').set('currentUser', _this.store.getById('user', response.user.id));
           });
         }, function(xhr, status, error) {
           Ember.run(function() {
@@ -565,8 +585,14 @@ Ember.SimpleAuth.ApplicationRouteMixin = Ember.Mixin.create({
       @method logout
     */
     logout: function() {
-      this.get('session').destroy();
-      this.transitionTo(Ember.SimpleAuth.routeAfterLogout);
+      var that = this;
+      $.post('api/sign_out').then(function(){
+        that.store.init();
+        that.get('session').destroy();
+        that.transitionTo(Ember.SimpleAuth.routeAfterLogout);},
+        function(error){
+          that.controllerFor('application').set('errors', error.responseJSON.message);
+        });
     }
   }
 });

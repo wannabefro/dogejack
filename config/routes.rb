@@ -3,7 +3,8 @@ Dogejack::Application.routes.draw do
   namespace :api do
     devise_scope :user do
       post "registrations" => "registrations#create"
-      post "sign-in" => "sessions#create"
+      post "sign_in" => "sessions#create"
+      post "sign_out" => "sessions#destroy"
     end
   end
 
