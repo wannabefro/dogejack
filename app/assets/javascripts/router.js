@@ -4,4 +4,5 @@ App.Router.map(function() {
   this.route('login');
   this.route('home', {path: '/'});
   this.route('register', {path: '/sign-up'});
+  this.resource('game', {path: '/play'});
 });

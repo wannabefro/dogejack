@@ -7,11 +7,16 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :validatable,
          :token_authenticatable
 
-  private
   attr_accessor :login
+
+  has_many :games
 
   validates_presence_of :username
   validates_uniqueness_of :username
+
+  def unfinished_games
+    games.where('state != ?', 'finished')
+  end
 
   def self.find_first_by_auth_conditions(warden_conditions)
     conditions = warden_conditions.dup

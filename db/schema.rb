@@ -30,6 +30,8 @@ ActiveRecord::Schema.define(version: 20131230232912) do
     t.datetime "updated_at"
   end
 
+  add_index "deck_cards", ["deck_id", "card_id"], name: "index_deck_cards_on_deck_id_and_card_id", unique: true, using: :btree
+
   create_table "decks", force: true do |t|
     t.integer  "game_id",    null: false
     t.datetime "created_at"
@@ -40,9 +42,9 @@ ActiveRecord::Schema.define(version: 20131230232912) do
 
   create_table "games", force: true do |t|
     t.integer  "user_id",                          null: false
+    t.string   "state",        default: "started"
     t.string   "player_cards", default: [],                     array: true
     t.string   "dealer_cards", default: [],                     array: true
-    t.string   "state",        default: "started"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

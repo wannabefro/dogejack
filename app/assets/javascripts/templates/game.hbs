@@ -1,0 +1,8 @@
+<h1>Play!!</h1>
+{{state}}
+<button {{action 'start'}} class='btn btn-block btn-primary btn-square'>Begin</button>
+<button {{action 'deal'}} class='btn btn-block btn-primary btn-square'>Deal</button>
+{{#each playerHand}}
+  {{value}}
+  {{suit}}
+{{/each}}

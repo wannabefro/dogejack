@@ -6,6 +6,8 @@ Dogejack::Application.routes.draw do
       post "sign_in" => "sessions#create"
       post "sign_out" => "sessions#destroy"
     end
+    resources :games, only: [:create]
+    get "games/deal" => "games#deal"
   end
 
   root 'home#index'
