@@ -4,7 +4,6 @@ class CreateCards < ActiveRecord::Migration
       t.string :value, null: false
       t.string :suit, null: false
 
-      t.timestamps
     end
   end
 end

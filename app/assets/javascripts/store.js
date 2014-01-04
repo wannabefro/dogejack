@@ -5,3 +5,13 @@ App.Store = DS.Store.extend({
   // is built to work nicely with the ActiveModel::Serializers gem.
   adapter: '_ams'
 });
+
+App.RawTransform = DS.Transform.extend({
+  deserialize: function(serialized) {
+    return serialized;
+  },
+  serialize: function(deserialized) {
+    return deserialized;
+  }
+});
+

@@ -17,10 +17,8 @@ ActiveRecord::Schema.define(version: 20131230232912) do
   enable_extension "plpgsql"
 
   create_table "cards", force: true do |t|
-    t.string   "value",      null: false
-    t.string   "suit",       null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string "value", null: false
+    t.string "suit",  null: false
   end
 
   create_table "deck_cards", force: true do |t|

@@ -1,21 +1,20 @@
 class Api::GamesController < ApplicationController
   before_action :get_user
+  before_action :get_game
   before_action :verify_user_token
 
   def create
-    close_games
-    @game = Game.create!(user: @user)
+    @game ||= Game.create!(user: @user)
     if @game
-      render status: 200, json: @game
+      render status: 200, json: [@game]
     else
       render status: 500
     end
   end
 
   def deal
-    @game = @user.unfinished_games.take
     @game.get_card
-    render status: 200, json: @game
+    render status: 200, json: [@game]
   end
 
   private
@@ -28,8 +27,7 @@ class Api::GamesController < ApplicationController
     @user = User.find_by_authentication_token(request.authorization.split(' ')[1])
   end
 
-  def close_games
-    @user.unfinished_games.each {|x| x.finish}
+  def get_game
+    @game = @user.unfinished_games.take
   end
-
 end
