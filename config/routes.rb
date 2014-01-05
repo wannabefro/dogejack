@@ -8,6 +8,9 @@ Dogejack::Application.routes.draw do
     end
     resources :games, only: [:create]
     get "games/deal" => "games#deal"
+    get "games/hit" => "games#hit"
+    get "games/stand" => "games#stand"
+    get "games/dealer" => "games#dealer"
   end
 
   root 'home#index'

@@ -4,6 +4,9 @@ App.Game = DS.Model.extend({
   dealerCards: DS.attr('raw'),
   playerCards: DS.attr('raw'),
   state: DS.attr(),
+  playerScore: DS.attr(),
+  dealerScore: DS.attr(),
+  winner: DS.attr(),
 
   playerHand: function(){
     var that = this;

@@ -14,7 +14,29 @@ class Api::GamesController < ApplicationController
   end
 
   def deal
-    @game.get_card
+    @game.deal
+    @game.dealt
+    render status: 200, json: [@game]
+  end
+
+  def hit
+    if @game.hit
+      render status: 200, json: [@game]
+    else
+      render status: 500, json: errors
+    end
+  end
+
+  def stand
+    if @game.stand
+      render status: 200, json: [@game]
+    else
+      render status: 500, json: errors
+    end
+  end
+
+  def dealer
+    @game.dealers_turn
     render status: 200, json: [@game]
   end
 

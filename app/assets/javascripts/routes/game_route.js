@@ -8,6 +8,6 @@ App.GameRoute = Ember.Route.extend(Ember.SimpleAuth.AuthenticatedRouteMixin, {
     }, function(err){
       that.controllerFor('application').set('errors', 'Something went wrong. Please try again');
     });
-  },
+  }
 
 });

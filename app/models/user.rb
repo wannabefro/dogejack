@@ -18,6 +18,18 @@ class User < ActiveRecord::Base
     games.where('state != ?', 'finished')
   end
 
+  def won
+    games.where(winner: 'player').count
+  end
+
+  def lost
+    games.where(winner: 'dealer').count
+  end
+
+  def tied
+    games.where(winner: 'tie').count
+  end
+
   def self.find_first_by_auth_conditions(warden_conditions)
     conditions = warden_conditions.dup
     if login = conditions.delete(:login)
