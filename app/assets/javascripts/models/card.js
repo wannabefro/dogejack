@@ -1,5 +1,5 @@
 App.Card = DS.Model.extend({
   value: DS.attr(),
   suit: DS.attr(),
-  decks: DS.hasMany('deck')
+  decks: DS.hasMany('deck'),
 });

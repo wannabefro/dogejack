@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(version: 20131230232912) do
   create_table "deck_cards", force: true do |t|
     t.integer  "deck_id"
     t.integer  "card_id"
+    t.boolean  "played",     default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

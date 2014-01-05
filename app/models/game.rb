@@ -12,11 +12,11 @@ class Game < ActiveRecord::Base
   end
 
   def get_card
+    player_cards_will_change!
     deck = decks.take
-    card = deck.cards.pop
-    deck.cards.delete(card)
-    player_cards << card
-    self.save!
+    card = deck.unplayed_cards.sample
+    deck.play_card(card)
+    update_attributes(player_cards: player_cards.push(card.id))
   end
 
   private

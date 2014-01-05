@@ -5,6 +5,7 @@ class Api::GamesController < ApplicationController
 
   def create
     @game ||= Game.create!(user: @user)
+    @cards = Card.all
     if @game
       render status: 200, json: [@game]
     else
