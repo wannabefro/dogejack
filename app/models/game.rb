@@ -113,7 +113,7 @@ class Game < ActiveRecord::Base
   end
 
   def can_stand?
-    true
+    state == 'players_turn' && not_bust
   end
 
   def create_decks
