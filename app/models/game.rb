@@ -109,7 +109,7 @@ class Game < ActiveRecord::Base
   end
 
   def not_bust
-    score(player_cards) <= 21
+    get_score(player_cards) <= 21
   end
 
   def can_stand?

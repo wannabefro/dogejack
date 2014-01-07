@@ -41,6 +41,41 @@ describe Game do
     end
   end
 
+  context 'get winner' do
+    it 'the dealer wins if the player busts' do
+      game.stub(:player_score) {22}
+      game.get_winner
+      expect(game.winner).to eql('dealer')
+    end
+
+    it 'the player wins if the dealer busts' do
+      game.stub(:dealer_score) {22}
+      game.get_winner
+      expect(game.winner).to eql('player')
+    end
+
+    it 'the player wins if they have a higher score than the dealer' do
+      game.stub(:player_score) {21}
+      game.stub(:dealer_score) {17}
+      game.get_winner
+      expect(game.winner).to eql('player')
+    end
+
+    it 'the dealer wins if they have a higher score than the player' do
+      game.stub(:player_score) {17}
+      game.stub(:dealer_score) {21}
+      game.get_winner
+      expect(game.winner).to eql('dealer')
+    end
+
+    it 'should be a tie if they both have the same score' do
+      game.stub(:player_score) {21}
+      game.stub(:dealer_score) {21}
+      game.get_winner
+      expect(game.winner).to eql('tie')
+    end
+  end
+
   context 'scores' do
     before(:each) do
       seed
