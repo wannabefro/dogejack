@@ -1,5 +1,6 @@
 class User < ActiveRecord::Base
   before_save :ensure_authentication_token
+  after_create :make_wallet
   # Include default devise modules. Others availale are:
   # :token_authenticatable, :confirmable,
   # :lockable, :timeoutable and :omniauthable
@@ -10,6 +11,7 @@ class User < ActiveRecord::Base
   attr_accessor :login
 
   has_many :games
+  has_many :wallets
 
   validates_presence_of :username
   validates_uniqueness_of :username
@@ -37,5 +39,11 @@ class User < ActiveRecord::Base
     else
       where(conditions).first
     end
+  end
+
+  private
+  
+  def make_wallet
+    Wallet.create!(balance: 500, user_id: id)
   end
 end

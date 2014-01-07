@@ -16,7 +16,7 @@
           {{#link-to 'game'}}Play Now{{/link-to}}
         {{/link-to}}
         {{#if session.isAuthenticated}}
-        <p class="navbar-text">Welcome {{currentUser.username}}. {{currentUser.won}}-{{currentUser.lost}}-{{currentUser.tied}}</p>
+        <p class="navbar-text">Welcome {{currentUser.username}}. {{currentUser.won}}-{{currentUser.lost}}-{{currentUser.tied}}. Balance: {{currentUser.wallets.1.balance}}</p>
         {{ else }}
           {{#link-to 'register' tagName="li" href=false}}
             {{#link-to 'register'}}Sign Up{{/link-to}}
