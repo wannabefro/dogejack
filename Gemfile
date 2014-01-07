@@ -39,6 +39,8 @@ group :test, :development do
   gem 'factory_girl_rails'
 end
 
+gem 'coveralls', require: false
+
 group :test do
   gem 'rake'
   gem 'shoulda'
