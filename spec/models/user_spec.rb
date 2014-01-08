@@ -9,8 +9,8 @@ describe User do
     it 'should create a wallet after creation' do
       wallet_count = Wallet.count
       user = FactoryGirl.create(:user)
-      expect(wallet_count).to eql(wallet_count + 1)
-      expect(user.wallet.balance).to eql(500)
+      expect(Wallet.count).to eql(wallet_count + 1)
+      expect(user.wallets.take.balance).to eql(500)
     end
   end
 end
