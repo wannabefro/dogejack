@@ -51,7 +51,7 @@ class Game < ActiveRecord::Base
   def dealers_turn
     if state == 'dealers_turn'
       get_card('dealer')
-      self.finish if bust(dealer_score) || dealer_stand || dealer_score > player_score
+      self.finish if bust(dealer_score) || dealer_stand
       return true
     end
   end

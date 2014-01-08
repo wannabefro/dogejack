@@ -26,6 +26,11 @@
   <h3>Dealer's Turn</h3>
 {{/if}}
 {{#if finished}}
-  {{input value=bet}}
-  <button {{action 'again'}} class='btn btn-block btn-primary btn-square'>Play again?</button>
+  {{#if canBet}}
+    <br>
+    {{input value=bet}}
+    <button {{action 'again'}} class='btn btn-block btn-primary btn-square'>Play again?</button>
+  {{else}}
+    <h3>Out of cash</h3>
+  {{/if}}
 {{/if}}
