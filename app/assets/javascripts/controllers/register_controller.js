@@ -8,10 +8,11 @@ App.RegisterController = Ember.ObjectController.extend({
       data = {user: userInfo};
       $.post('/api/registrations', data, null, 'json').then(function(response){
         Ember.run(function() {
+          response.user[0].users = [response.user[0].users];
           _this.get('session').setup(response);
           _this.send('loginSucceeded');
-          _this.store.push('user', response.user);
-          _this.get('controllers.application').set('currentUser', _this.store.getById('user', response.user.id));
+          _this.store.pushPayload('user', response.user[0]);
+          _this.get('controllers.application').set('currentUser', _this.store.getById('user', response.user[0].users[0].id));
         });
         _this.get('controllers.application').set('success', 'Welcome to DogeJack ' + response.user.username);
       }, function(err){

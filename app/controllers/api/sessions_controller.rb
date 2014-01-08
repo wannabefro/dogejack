@@ -7,7 +7,7 @@ class Api::SessionsController < Devise::SessionsController
     if user && user.valid_password?(params[:password])
       sign_in user
       @user = user
-      render json: { :access_token => user.authentication_token, :token_type => "bearer", user: @user }
+      render json: { :access_token => user.authentication_token, :token_type => "bearer", user: [UserSerializer.new(@user)] }
     else
       render json: {
         errors: {

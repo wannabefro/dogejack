@@ -55,8 +55,9 @@ Ember.SimpleAuth.setup = function(container, application, options) {
   if (session.user){
     var store = container.lookup('store:main');
     var user = JSON.parse(session.user);
-    store.push('user', user);
-    container.lookup('controller:application').set('currentUser', store.getById('user', user.id));
+    store.createRecord('wallet', user);
+    store.pushPayload('user', user);
+    container.lookup('controller:application').set('currentUser', store.getById('user', user.users[0].id));
   }
 
   Ember.$.ajaxPrefilter(function(options, originalOptions, jqXHR) {
@@ -191,7 +192,7 @@ Ember.SimpleAuth.Session = Ember.Object.extend({
   setup: function(data) {
     data = data || {};
     this.setProperties({
-      user:            JSON.stringify(data.user),
+      user:            JSON.stringify(data.user[0]),
       authToken:       data.access_token,
       refreshToken:    (data.refresh_token || this.get('refreshToken')),
       authTokenExpiry: (data.expires_in > 0 ? data.expires_in * 1000 : this.get('authTokenExpiry')) || 0
@@ -468,10 +469,11 @@ Ember.SimpleAuth.LoginControllerMixin = Ember.Mixin.create({
         var requestOptions = this.tokenRequestOptions(data.identification, data.password, data.client_id, data.client_secret);
         Ember.$.ajax(Ember.SimpleAuth.serverTokenEndpoint, requestOptions).then(function(response) {
           Ember.run(function() {
+            response.user[0].users = [response.user[0].users];
             _this.get('session').setup(response);
             _this.send('loginSucceeded');
-            _this.store.push('user', response.user);
-            _this.get('controllers.application').set('currentUser', _this.store.getById('user', response.user.id));
+            _this.store.pushPayload('user', response.user[0]);
+            _this.get('controllers.application').set('currentUser', _this.store.getById('user', response.user[0].users[0].id));
           });
         }, function(xhr, status, error) {
           Ember.run(function() {

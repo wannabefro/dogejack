@@ -3,6 +3,7 @@ class Game < ActiveRecord::Base
   has_many :decks, dependent: :destroy
   has_many :cards, through: :decks
   after_create :create_decks
+  validates_numericality_of :bet, greater_than: 0, only_integer: true, if: :game_started
   NUMBER_OF_DECKS = 1
 
   state_machine :state, initial: :started do 
@@ -50,7 +51,7 @@ class Game < ActiveRecord::Base
   def dealers_turn
     if state == 'dealers_turn'
       get_card('dealer')
-      self.finish if bust(dealer_score) || dealer_stand
+      self.finish if bust(dealer_score) || dealer_stand || dealer_score > player_score
       return true
     end
   end
@@ -68,12 +69,21 @@ class Game < ActiveRecord::Base
       self.winner = 'tie'
     end
     self.save!
+    update_wallet
   end
 
   private
 
   def dealer_won
     dealer_score > player_score
+  end
+
+  def update_wallet
+    wallet = user.wallets.take
+    case winner
+      when 'player' then wallet.update_attributes(balance: wallet.balance += (bet * 2))
+      when 'tie' then wallet.update_attributes(balance: wallet.balance += bet)
+    end
   end
 
   def get_score(hand)
@@ -133,6 +143,10 @@ class Game < ActiveRecord::Base
       dealer_cards_will_change!
       update_attributes(dealer_cards: dealer_cards.push(card.id))
     end
+  end
+
+  def game_started
+    state == 'players_turn'
   end
 
 end

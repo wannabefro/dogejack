@@ -6,7 +6,7 @@ class Api::RegistrationsController < Devise::RegistrationsController
     if resource.save
       if resource.active_for_authentication?
         sign_up(resource_name, resource)
-        return render json: {user: resource, access_token: resource.authentication_token, token_type: 'bearer'}
+        return render json: {user: [UserSerializer.new(resource)], access_token: resource.authentication_token, token_type: 'bearer'}
       else
         expire_session_data_after_sign_in!
         return render :json => {:success => true}

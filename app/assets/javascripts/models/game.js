@@ -7,6 +7,7 @@ App.Game = DS.Model.extend({
   playerScore: DS.attr(),
   dealerScore: DS.attr(),
   winner: DS.attr(),
+  bet: DS.attr(),
 
   playerHand: function(){
     var that = this;

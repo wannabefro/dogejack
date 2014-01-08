@@ -1,3 +1,3 @@
 class WalletSerializer < ActiveModel::Serializer
-  attributes :id, :balance, :user_id
+  attributes :id, :balance
 end

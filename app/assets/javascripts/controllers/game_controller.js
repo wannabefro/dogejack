@@ -1,4 +1,6 @@
 App.GameController = Ember.ObjectController.extend({
+  betAmount: null,
+
   canDeal: function(){
     if (this.get('state') === 'started'){
       return true;
@@ -41,10 +43,15 @@ App.GameController = Ember.ObjectController.extend({
 
     deal: function(){
       var that = this;
-      $.get('/api/games/deal').then(function(response){
+      if (this.get('bet') != 0){
+        this.set('betAmount', this.get('bet'));
+      }
+      data = this.getProperties('betAmount');
+      $.get('/api/games/deal', data).then(function(response){
         that.store.pushPayload('game', response);
       }, function(err){
       });
+      this.set('betAmount', null);
     },
 
     hit: function(){
@@ -65,6 +72,7 @@ App.GameController = Ember.ObjectController.extend({
 
     again: function(){
       var that = this;
+      this.set('betAmount', this.get('bet'));
       $.post('/api/games').then(function(response){
         that.store.pushPayload('game', response);
         that.game = that.store.getById('game', response.games[0].id);

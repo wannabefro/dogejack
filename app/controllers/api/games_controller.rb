@@ -2,6 +2,7 @@ class Api::GamesController < ApplicationController
   before_action :get_user
   before_action :get_game
   before_action :verify_user_token
+  before_action :get_wallet, only: [:deal]
 
   def create
     @game ||= Game.create!(user: @user)
@@ -15,7 +16,9 @@ class Api::GamesController < ApplicationController
 
   def deal
     @game.deal
+    @game.bet = params[:betAmount].to_i if params[:betAmount]
     @game.dealt
+    @wallet.update_attributes(balance: (@wallet.balance -= @game.bet))
     render status: 200, json: [@game]
   end
 
@@ -52,5 +55,11 @@ class Api::GamesController < ApplicationController
 
   def get_game
     @game = @user.unfinished_games.take
+  end
+
+  def get_wallet
+    if @user
+      @wallet = @user.wallets.take
+    end
   end
 end
