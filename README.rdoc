@@ -1,5 +1,5 @@
-
 {<img src="https://coveralls.io/repos/wannabefro/dogejack/badge.png?branch=master" alt="Coverage Status" />}[https://coveralls.io/r/wannabefro/dogejack?branch=master]
+{<img src="https://travis-ci.org/wannabefro/dogejack.png?branch=master" alt="Build Status" />}[https://travis-ci.org/wannabefro/dogejack]
 
 
 Blackjack with Ember and Rails
