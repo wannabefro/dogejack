@@ -15,8 +15,14 @@
   {{suit}}
 {{/each}}
 {{#if canDeal}}
-  {{input value=bet}}
-  <button {{action 'deal'}} class='btn btn-block btn-primary btn-square'>Deal</button>
+<div {{bind-attr class=":form-group errors.bet:has-error"}}>
+  <label for="">Place Your Bet</label>
+  {{input type="text" value=bet class="form-control"}}
+  {{#if errors.bet }}
+  <span class="help-block">{{format-error errors.bet}}</span>
+  {{/if}}
+</div>
+<button {{action 'deal'}} class='btn btn-block btn-primary btn-square'>Deal</button>
 {{/if}}
 {{#if canHit}}
   <button {{action 'hit'}} class='btn btn-block btn-primary btn-square'>Hit</button>
@@ -27,8 +33,13 @@
 {{/if}}
 {{#if finished}}
   {{#if canBet}}
-    <br>
-    {{input value=bet}}
+    <div {{bind-attr class=":form-group errors.bet:has-error"}}>
+    <label for="">Place Your Bet</label>
+    {{input type="text" value=bet class="form-control"}}
+    {{#if errors.bet }}
+    <span class="help-block">{{format-error errors.bet}}</span>
+    {{/if}}
+  </div>
     <button {{action 'again'}} class='btn btn-block btn-primary btn-square'>Play again?</button>
   {{else}}
     <h3>Out of cash</h3>

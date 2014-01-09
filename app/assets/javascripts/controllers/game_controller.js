@@ -1,5 +1,6 @@
 App.GameController = Ember.ObjectController.extend({
   needs: ['application'],
+  errors: null,
   betAmount: null,
 
   canBet: function(){
@@ -12,12 +13,9 @@ App.GameController = Ember.ObjectController.extend({
   validBet: function(){
     var balance = this.get('controllers.application.currentUser').get('wallets').get('content')[0].get('balance');
     if (parseInt(this.get('betAmount')) <= balance){
-      this.get('controllers.application').set('errors', null);
       return true;
-    } else {
-      this.get('controllers.application').set('errors', 'Not a valid bet amount');
     }
-  }.property('bet'),
+  }.property(),
 
   canDeal: function(){
     if (this.get('state') === 'started'){
@@ -69,7 +67,10 @@ App.GameController = Ember.ObjectController.extend({
         $.get('/api/games/deal', data).then(function(response){
           that.store.pushPayload('game', response);
         }, function(err){
+          that.set('errors', err.errors);
         });
+      } else {
+        this.get('controllers.application').set('errors', 'That wasn\'t a valid bet');
       }
       this.set('betAmount', null);
     },
