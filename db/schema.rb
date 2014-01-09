@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140108141521) do
+ActiveRecord::Schema.define(version: 20140109190751) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,6 +48,9 @@ ActiveRecord::Schema.define(version: 20140108141521) do
     t.datetime "updated_at"
     t.string   "winner"
     t.integer  "bet",          default: 0,         null: false
+    t.string   "split_cards",  default: [],                     array: true
+    t.string   "split_bets",   default: [],                     array: true
+    t.boolean  "split",        default: false
   end
 
   create_table "users", force: true do |t|

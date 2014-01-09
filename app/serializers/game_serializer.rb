@@ -1,6 +1,6 @@
 class GameSerializer < ActiveModel::Serializer
   embed :ids, include: true
-  attributes :id, :state, :player_cards, :dealer_cards, :player_score, :dealer_score, :winner, :bet
+  attributes :id, :state, :player_cards, :dealer_cards, :player_score, :dealer_score, :winner, :bet, :split, :split_cards, :split_bets
   has_many :decks
   has_one :user
   has_many :cards

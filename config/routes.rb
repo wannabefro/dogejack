@@ -12,6 +12,7 @@ Dogejack::Application.routes.draw do
     get "games/stand" => "games#stand"
     get "games/dealer" => "games#dealer"
     get "games/double" => "games#double"
+    get "games/split" => "games#split"
   end
 
   root 'home#index'

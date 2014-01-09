@@ -4,6 +4,20 @@ App.GameController = Ember.ObjectController.extend({
   betAmount: null,
   doubling: false,
 
+  canSplit: function(){
+    if (this.get('playerCards') != undefined && this.get('playerCards').length === 2 && this.get('sameValue')){
+      return true;
+    }
+  }.property('playerCards'),
+
+  sameValue: function(){
+    cardValues = [];
+    this.get('playerHand').forEach(function(card){cardValues.push(card.get('value'))})
+    if (cardValues[0] == cardValues[1]){
+      return true;
+    }
+  }.property('playerCards'),
+
   canBet: function(){
     var balance = this.get('controllers.application.currentUser').get('wallets').get('content')[0].get('balance');
     if (balance > 0){
@@ -27,7 +41,7 @@ App.GameController = Ember.ObjectController.extend({
   }.property('doubleBet'),
 
   canDouble: function(){
-    if (this.get('playerCards') != undefined && this.get('playerCards').length === 2){
+    if (this.get('playerCards') != undefined && this.get('playerCards').length === 2 && this.get('playerScore') != 21){
       return true;
     }
   }.property('playerCards'),
@@ -114,6 +128,13 @@ App.GameController = Ember.ObjectController.extend({
         that.game = that.store.getById('game', response.games[0].id);
         that.set('content', that.game);
         that.send('deal');
+      }, function(err){
+      });
+    },
+
+    split: function(){
+      var that = this;
+      $.get('/api/games/split').then(function(response){
       }, function(err){
       });
     },
