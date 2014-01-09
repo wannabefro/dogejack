@@ -72,7 +72,23 @@ class Game < ActiveRecord::Base
     update_wallet
   end
 
+  def double(amount)
+    if canDouble(amount)
+      wallet = user.wallets.take
+      wallet.update_attributes(balance: wallet.balance -= amount)
+      update_attributes(bet: self.bet += amount)
+      hit
+      self.end_turn
+    else
+      return false
+    end
+  end
+
   private
+
+  def canDouble(amount)
+    amount <= bet && amount <= user.wallets.take.balance
+  end
 
   def dealer_won
     dealer_score > player_score

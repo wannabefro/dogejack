@@ -25,8 +25,20 @@
 <button {{action 'deal'}} class='btn btn-block btn-primary btn-square'>Deal</button>
 {{/if}}
 {{#if canHit}}
-  <button {{action 'hit'}} class='btn btn-block btn-primary btn-square'>Hit</button>
-  <button {{action 'stand'}} class='btn btn-block btn-primary btn-square'>Stand</button>
+{{#if canDouble}}
+<button {{action 'willDouble'}} class='btn btn-block btn-primary btn-square'>Double</button>
+{{#if doubling}}
+<div {{bind-attr class=":form-group errors.doubleBet:has-error"}}>
+  <label for="">Double Amount</label>
+  {{input type="text" value=doubleBet class="form-control"}}
+  {{#if errors.bet }}
+  <span class="help-block">{{format-error errors.doubleBet}}</span>
+  {{/if}}
+</div>
+{{/if}}
+{{/if}}
+<button {{action 'hit'}} class='btn btn-block btn-primary btn-square'>Hit</button>
+<button {{action 'stand'}} class='btn btn-block btn-primary btn-square'>Stand</button>
 {{/if}}
 {{#if dealersTurn}}
   <h3>Dealer's Turn</h3>

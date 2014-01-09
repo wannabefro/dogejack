@@ -2,6 +2,7 @@ App.GameController = Ember.ObjectController.extend({
   needs: ['application'],
   errors: null,
   betAmount: null,
+  doubling: false,
 
   canBet: function(){
     var balance = this.get('controllers.application.currentUser').get('wallets').get('content')[0].get('balance');
@@ -16,6 +17,20 @@ App.GameController = Ember.ObjectController.extend({
       return true;
     }
   }.property(),
+
+  checkDouble: function(){
+    var balance = this.get('controllers.application.currentUser').get('wallets').get('content')[0].get('balance');
+    var doubleBet = parseInt(this.get('doubleBet'));
+    if (doubleBet <= balance && doubleBet <= this.get('bet')){
+      return true;
+    }
+  }.property('doubleBet'),
+
+  canDouble: function(){
+    if (this.get('playerCards') != undefined && this.get('playerCards').length === 2){
+      return true;
+    }
+  }.property('playerCards'),
 
   canDeal: function(){
     if (this.get('state') === 'started'){
@@ -101,6 +116,30 @@ App.GameController = Ember.ObjectController.extend({
         that.send('deal');
       }, function(err){
       });
+    },
+
+    double: function(){
+      if (this.get('checkDouble')){
+        this.set('controllers.application.errors', null);
+        data = this.getProperties('doubleBet');
+        var that = this;
+        $.get('/api/games/double', data).then(function(response){
+          that.store.pushPayload('game', response);
+          that.set('bet', response.games[0].bet);
+          that.toggleProperty('doubling');
+        }, function(err){
+        })
+      } else {
+          this.set('controllers.application.errors', 'You can\'t double more than ' + this.get('bet'));
+        }
+      },
+
+    willDouble: function(){
+      if (this.get('doubleBet') != undefined){
+        this.send('double');
+      } else {
+        this.toggleProperty('doubling');
+      }
     }
   }
 });

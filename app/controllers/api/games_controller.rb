@@ -22,6 +22,14 @@ class Api::GamesController < ApplicationController
     render status: 200, json: [@game]
   end
 
+  def double
+    if @game.double(params[:doubleBet].to_i)
+      render status: 200, json: [@game]
+    else
+      render status: 500, json: {errors: 'Sorry something went wrong'}
+    end
+  end
+
   def hit
     if @game.hit
       render status: 200, json: [@game]
