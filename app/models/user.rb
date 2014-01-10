@@ -10,8 +10,9 @@ class User < ActiveRecord::Base
 
   attr_accessor :login
 
-  has_many :games
+  has_many :games, through: :game_sessions
   has_many :wallets
+  has_many :game_sessions
 
   validates_presence_of :username
   validates_uniqueness_of :username

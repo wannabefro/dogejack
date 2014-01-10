@@ -1,10 +1,8 @@
 class Game < ActiveRecord::Base
   belongs_to :user, counter_cache: true
-  has_many :decks, dependent: :destroy
-  has_many :cards, through: :decks
-  after_create :create_decks
+  belongs_to :game_session
   validates_numericality_of :bet, greater_than: 0, only_integer: true, if: :game_started
-  NUMBER_OF_DECKS = 1
+  before_create :shuffle_time
 
   state_machine :state, initial: :started do 
     event :finish do
@@ -19,6 +17,10 @@ class Game < ActiveRecord::Base
     before_transition all => :finished do |game, transition|
       game.get_winner
     end
+  end
+
+  def shoe_penetration
+    penetration_level(game_session.decks)
   end
 
   def deal
@@ -126,16 +128,8 @@ class Game < ActiveRecord::Base
     state == 'players_turn' && not_bust
   end
 
-  def create_decks
-    NUMBER_OF_DECKS.times do
-      Deck.create!(game_id: id)
-    end
-  end
-
   def get_card(player)
-    deck = decks.take
-    card = deck.unplayed_cards.sample
-    deck.play_card(card)
+    card = game_session.play_card
     if player == 'player'
       player_cards_will_change!
       update_attributes(player_cards: player_cards.push(card.id))
@@ -148,5 +142,20 @@ class Game < ActiveRecord::Base
   def game_started
     state == 'players_turn'
   end
+
+  def shuffle_time
+    if penetration_level(self.game_session.decks) < 0.30
+      self.game_session = GameSession.create!(user: self.user)
+    end
+  end
+
+  def penetration_level(decks)
+    played_cards = 0
+    decks.each do |deck|
+      played_cards += deck.played_cards.count
+    end
+    1 - (played_cards / (decks.count * Card.count.to_f))
+  end
+
 
 end
