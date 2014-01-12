@@ -5,15 +5,16 @@
 <h3>Player Cards</h3>
 <h5>Player Score: {{playerScore}}</h5>
 {{#each playerHand}}
-  {{value}}
-  {{suit}}
+  {{partial "card"}}
 {{/each}}
 <h3>Dealer Cards</h3>
 <h5>Dealer Score: {{dealerScore}}</h5>
 {{#each dealerHand}}
-  {{value}}
-  {{suit}}
+  {{partial "card"}}
 {{/each}}
+{{#if canHit}}
+  {{partial "card_back"}}
+{{/if}}
 {{#if canDeal}}
 <div {{bind-attr class=":form-group errors.bet:has-error"}}>
   <label for="">Place Your Bet</label>
