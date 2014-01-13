@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140109190751) do
+ActiveRecord::Schema.define(version: 20140109154115) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,25 +32,32 @@ ActiveRecord::Schema.define(version: 20140109190751) do
   add_index "deck_cards", ["deck_id", "card_id"], name: "index_deck_cards_on_deck_id_and_card_id", unique: true, using: :btree
 
   create_table "decks", force: true do |t|
-    t.integer  "game_id",    null: false
+    t.integer  "game_session_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "decks", ["game_id"], name: "index_decks_on_game_id", using: :btree
+  add_index "decks", ["game_session_id"], name: "index_decks_on_game_session_id", using: :btree
+
+  create_table "game_sessions", force: true do |t|
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "games", force: true do |t|
-    t.integer  "user_id",                          null: false
-    t.string   "state",        default: "started"
-    t.string   "player_cards", default: [],                     array: true
-    t.string   "dealer_cards", default: [],                     array: true
+    t.integer  "user_id",                             null: false
+    t.string   "state",           default: "started"
+    t.string   "player_cards",    default: [],                     array: true
+    t.string   "dealer_cards",    default: [],                     array: true
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "winner"
-    t.integer  "bet",          default: 0,         null: false
     t.string   "split_cards",  default: [],                     array: true
     t.string   "split_bets",   default: [],                     array: true
     t.boolean  "split",        default: false
+    t.integer  "bet",             default: 0,         null: false
+    t.integer  "game_session_id",                     null: false
   end
 
   create_table "users", force: true do |t|

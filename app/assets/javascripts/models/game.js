@@ -1,6 +1,5 @@
 App.Game = DS.Model.extend({
   user: DS.belongsTo('user'),
-  decks: DS.hasMany('deck'),
   dealerCards: DS.attr('raw'),
   playerCards: DS.attr('raw'),
   state: DS.attr(),
@@ -11,8 +10,10 @@ App.Game = DS.Model.extend({
   split: DS.attr(),
   splitCards: DS.attr('raw'),
   splitBets: DS.attr('raw'),
-
+  shoePenetration: DS.attr(),
+  gameSession: DS.belongsTo('gameSession'),
   playerHand: function(){
+
     var that = this;
     return this.get('playerCards').map(function(item){
       return that.store.getById('card', item);
@@ -24,6 +25,7 @@ App.Game = DS.Model.extend({
     return this.get('dealerCards').map(function(item){
       return that.store.getById('card', item);
     });
-  }.property('dealerCards')
+  }.property('dealerCards'),
+
 
 });

@@ -1,5 +1,5 @@
 class Deck < ActiveRecord::Base
-  belongs_to :game
+  belongs_to :game_session
   before_create :build_deck
 
   has_many :deck_cards, dependent: :destroy
@@ -11,12 +11,6 @@ class Deck < ActiveRecord::Base
 
   def played_cards
     cards.references(:deck_cards).where(deck_cards: {played: true})
-  end
-
-  def play_card(card)
-    card = card.deck_cards.where(deck_id: id).take
-    card.played = true
-    card.save!
   end
 
   private

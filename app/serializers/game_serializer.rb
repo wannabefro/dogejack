@@ -4,8 +4,9 @@ class GameSerializer < ActiveModel::Serializer
   has_many :decks
   has_one :user
   has_many :cards
+  has_one :game_session
 
   def cards
-    object.decks.first.played_cards
+    object.game_session.decks.map { |deck| deck.played_cards }.flatten
   end
 end
