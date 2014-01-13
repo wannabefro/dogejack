@@ -7,13 +7,14 @@ App.GameController = Ember.ObjectController.extend({
   canBet: function(){
     var balance = this.get('controllers.application.currentUser').get('wallets').get('content')[0].get('balance');
     if (balance > 0){
-      return true
+      return true;
     }
   }.property('state'),
 
   validBet: function(){
     var balance = this.get('controllers.application.currentUser').get('wallets').get('content')[0].get('balance');
-    if (parseInt(this.get('betAmount')) <= balance){
+    if (parseInt(this.get('betAmount'), 10) <= balance){
+      this.get('controllers.application').set('errors', null);
       return true;
     }
   }.property(),
@@ -54,7 +55,7 @@ App.GameController = Ember.ObjectController.extend({
     var that = this;
     if (this.get('state') === 'dealers_turn'){
       if (!this.dealersPlay){
-        this.dealersPlay = setInterval(function(){that.send('getDealersCard')}, 750);
+        this.dealersPlay = setInterval(function(){that.send('getDealersCard');}, 750);
       }
       return true;
     } else if (this.get('state') === 'finished') {
@@ -74,7 +75,7 @@ App.GameController = Ember.ObjectController.extend({
 
     deal: function(){
       var that = this;
-      if (this.get('bet') != 0){
+      if (this.get('bet') !== 0){
         this.set('betAmount', this.get('bet'));
       }
       data = this.getProperties('betAmount');

@@ -1,10 +1,7 @@
 class Game < ActiveRecord::Base
   belongs_to :user, counter_cache: true
-  has_many :decks, dependent: :destroy
-  has_many :cards, through: :decks
-  after_create :create_decks
+  belongs_to :game_session
   validates_numericality_of :bet, greater_than: 0, only_integer: true, if: :game_started
-  NUMBER_OF_DECKS = 1
 
   state_machine :state, initial: :started do 
     event :finish do
@@ -19,6 +16,10 @@ class Game < ActiveRecord::Base
     before_transition all => :finished do |game, transition|
       game.get_winner
     end
+  end
+
+  def shuffle_time
+    game_session.penetration_level < 0.33333
   end
 
   def deal
@@ -142,16 +143,8 @@ class Game < ActiveRecord::Base
     state == 'players_turn' && not_bust
   end
 
-  def create_decks
-    NUMBER_OF_DECKS.times do
-      Deck.create!(game_id: id)
-    end
-  end
-
   def get_card(player)
-    deck = decks.take
-    card = deck.unplayed_cards.sample
-    deck.play_card(card)
+    card = game_session.play_card
     if player == 'player'
       player_cards_will_change!
       update_attributes(player_cards: player_cards.push(card.id))

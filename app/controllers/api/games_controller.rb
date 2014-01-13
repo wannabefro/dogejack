@@ -1,12 +1,16 @@
 class Api::GamesController < ApplicationController
   before_action :get_user
   before_action :get_game
+  before_action :get_game_session
   before_action :verify_user_token
   before_action :get_wallet, only: [:deal]
 
   def create
-    @game ||= Game.create!(user: @user)
-    @cards = Card.all
+    @game ||= Game.create!(user: @user, game_session: @session)
+    if @game.shuffle_time
+      @game_session = GameSession.create(user: @user)
+      @game.update_attributes(game_session_id: @game_session.id)
+    end
     if @game
       render status: 200, json: [@game]
     else
@@ -63,6 +67,10 @@ class Api::GamesController < ApplicationController
 
   def get_game
     @game = @user.unfinished_games.take
+  end
+
+  def get_game_session
+    @session = @user.game_sessions.last || GameSession.create!(user_id: @user.id)
   end
 
   def get_wallet
