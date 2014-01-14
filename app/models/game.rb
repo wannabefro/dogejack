@@ -24,6 +24,7 @@ class Game < ActiveRecord::Base
     else
       false
     end
+  end
 
   def shuffle_time
     game_session.penetration_level < 0.33333

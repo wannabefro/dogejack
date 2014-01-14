@@ -1,11 +1,17 @@
 {{#if winner}}
   <h2>{{winner}} Wins</h2>
 {{/if}}
+{{#if showStatistics}}
 <h3>Shoe Penetration: {{gameSession.penetration}}%</h3>
 <h3>High Cards: {{gameSession.high}}</h3>
 <h3>Low Cards: {{gameSession.low}}</h3>
 <h3>Running Count: {{gameSession.runningCount}}</h3>
 <h3>True Count: {{gameSession.truecount}}</h3>
+<button class='btn btn-primary'{{action 'statistics'}}>Hide Statistics</button>
+{{else}}
+<button class='btn btn-primary'{{action 'statistics'}}>Show Statistics</button>
+{{/if}}
+
 
 <h3>Current Bet: {{bet}}</h3>
 <h3>Player Cards</h3>

@@ -1,6 +1,6 @@
 class GameSession < ActiveRecord::Base
-  has_many :games 
-  has_many :decks
+  has_many :games, dependent: :destroy
+  has_many :decks, dependent: :destroy
   has_many :cards, through: :decks
   belongs_to :user
 
