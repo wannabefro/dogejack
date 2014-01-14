@@ -1,18 +1,11 @@
 require 'spec_helper'
 
 describe Game do
-  it {should have_many(:decks)}
-  it {should have_many(:cards)}
   it {should belong_to(:user)}
+  it {should belong_to(:game_session)}
 
   let(:game) {FactoryGirl.create(:game)}
   let(:seed) {Seeders::Cards.seed}
-
-  it 'should create a new deck on creation' do
-    previous_count = Deck.count
-    FactoryGirl.create(:game)
-    expect(Deck.count).to eql(previous_count + Game::NUMBER_OF_DECKS)
-  end
 
   it 'should deal cards' do
     seed

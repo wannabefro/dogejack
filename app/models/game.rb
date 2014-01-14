@@ -19,7 +19,7 @@ class Game < ActiveRecord::Base
   end
 
   def split
-    if can_split
+    if can_split(player_cards)
       create_split_hand
     else
       false
@@ -105,8 +105,8 @@ class Game < ActiveRecord::Base
     update_attributes(split: true)
   end
 
-  def can_split
-    player_cards.map{|c| Card.find(c.to_i).value}.uniq.length == 1
+  def can_split(cards)
+    cards.map{|c| Card.find(c.to_i).value}.uniq.length == 1
   end
 
   def canDouble(amount)

@@ -1,5 +1,5 @@
 FactoryGirl.define do
   factory :deck do
-    game
+    game_session
   end
 end
