@@ -43,6 +43,7 @@ end
 gem 'coveralls', require: false
 
 group :test do
+  gem 'database_cleaner'
   gem 'rake'
   gem 'shoulda'
   gem 'capybara'

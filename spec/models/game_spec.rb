@@ -106,8 +106,8 @@ describe Game do
   context 'splitting' do
     before(:each) do
       seed
-      kings = Card.all.keep_if {|x| x.value == 'K'}.map{|x| x.id}
-      game.player_cards = kings[0..1]
+      @kings = Card.all.keep_if {|x| x.value == 'K'}.map{|x| x.id}
+      game.player_cards = @kings[0..1]
     end
 
     it 'should allow you to split if you have 2 cards of the same value' do
@@ -118,9 +118,10 @@ describe Game do
       expect(game.split_bets[0]).to eql(game.bet)
     end
 
-    it 'should caluclate a split hands value' do
+    it 'should calculate a split hands value' do
       game.dealt
       game.split
+      game.split_cards[0] = @kings.pop(2)
       expect(game.split_score(0)).to eql(20)
     end
   end
