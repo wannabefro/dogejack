@@ -18,14 +18,6 @@ class Game < ActiveRecord::Base
     end
   end
 
-  def split
-    if can_split(player_cards)
-      create_split_hand
-    else
-      false
-    end
-  end
-
   def shuffle_time
     game_session.penetration_level < 0.33333
   end
@@ -33,10 +25,6 @@ class Game < ActiveRecord::Base
   def deal
     2.times {get_card('player')}
     get_card('dealer')
-  end
-
-  def split_score(position)
-    get_score(split_cards[position])
   end
 
   def player_score
@@ -99,20 +87,6 @@ class Game < ActiveRecord::Base
 
   private
 
-  def create_split_hand
-    player_cards_will_change!
-    split_cards_will_change!
-    update_attributes(split_cards: self.split_cards << [player_cards.pop])
-    get_card('player')
-    get_card('split', 0)
-    update_attributes(split_bets: self.split_bets << self.bet)
-    update_attributes(split: true)
-  end
-
-  def can_split(cards)
-    cards.map{|c| Card.find(c.to_i).value}.uniq.length == 1
-  end
-
   def canDouble(amount)
     amount <= bet && amount <= user.wallets.take.balance
   end
@@ -174,9 +148,6 @@ class Game < ActiveRecord::Base
     if player == 'player'
       player_cards_will_change!
       update_attributes(player_cards: player_cards.push(card.id))
-    elsif player == 'split'
-      split_cards_will_change!
-      update_attributes(split_cards: split_cards[position] = [split_cards[position].push(card.id)])
     elsif player == 'dealer'
       dealer_cards_will_change!
       update_attributes(dealer_cards: dealer_cards.push(card.id))

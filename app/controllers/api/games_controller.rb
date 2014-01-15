@@ -26,6 +26,7 @@ class Api::GamesController < ApplicationController
     render status: 200, json: [@game]
   end
 
+  # use gamesession to create new games for the split as opposed to being handled on the game class
   def split
     if @game.split
       render status: 200, json: [@game]
