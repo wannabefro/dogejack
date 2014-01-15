@@ -35,6 +35,10 @@ class Game < ActiveRecord::Base
     get_card('dealer')
   end
 
+  def split_score(position)
+    get_score(split_cards[position])
+  end
+
   def player_score
     get_score(player_cards)
   end
@@ -98,9 +102,9 @@ class Game < ActiveRecord::Base
   def create_split_hand
     player_cards_will_change!
     split_cards_will_change!
-    update_attributes(split_cards: self.split_cards << player_cards.pop)
+    update_attributes(split_cards: self.split_cards << [player_cards.pop])
     get_card('player')
-    get_card('split')
+    get_card('split', 0)
     update_attributes(split_bets: self.split_bets << self.bet)
     update_attributes(split: true)
   end
@@ -165,14 +169,14 @@ class Game < ActiveRecord::Base
     state == 'players_turn' && not_bust
   end
 
-  def get_card(player)
+  def get_card(player, position=nil)
     card = game_session.play_card
     if player == 'player'
       player_cards_will_change!
       update_attributes(player_cards: player_cards.push(card.id))
     elsif player == 'split'
       split_cards_will_change!
-      update_attributes(split_cards: split_cards.push(card.id))
+      update_attributes(split_cards: split_cards[position] = [split_cards[position].push(card.id)])
     elsif player == 'dealer'
       dealer_cards_will_change!
       update_attributes(dealer_cards: dealer_cards.push(card.id))
