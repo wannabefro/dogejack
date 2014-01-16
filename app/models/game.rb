@@ -147,7 +147,7 @@ class Game < ActiveRecord::Base
     state == 'players_turn' && not_bust
   end
 
-  def get_card(player, position=nil)
+  def get_card(player)
     card = game_session.play_card
     if player == 'player'
       player_cards_will_change!

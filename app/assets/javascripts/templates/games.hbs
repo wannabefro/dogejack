@@ -1,13 +1,9 @@
-{{#if allSplitHandsPlayed}}
-{{/if}}
 {{#if showStatistics}}
-  {{#with firstGame}}
-  <h3>Shoe Penetration: {{gameSession.penetration}}%</h3>
-  <h3>High Cards: {{gameSession.high}}</h3>
-  <h3>Low Cards: {{gameSession.low}}</h3>
-  <h3>Running Count: {{gameSession.runningCount}}</h3>
-  <h3>True Count: {{gameSession.truecount}}</h3>
-  {{/with}}
+  <h3>Shoe Penetration: {{firstGame.gameSession.penetration}}%</h3>
+  <h3>High Cards: {{firstGame.gameSession.high}}</h3>
+  <h3>Low Cards: {{firstGame.gameSession.low}}</h3>
+  <h3>Running Count: {{firstGame.gameSession.runningCount}}</h3>
+  <h3>True Count: {{firstGame.gameSession.truecount}}</h3>
   <button class='btn btn-primary'{{action 'statistics'}}>Hide Statistics</button>
 {{else}}
   <button class='btn btn-primary'{{action 'statistics'}}>Show Statistics</button>
@@ -57,6 +53,12 @@
   {{#if dealersTurn}}
     <h3>Dealer's Turn</h3>
   {{/if}}
+  <h3>Dealer Cards</h3>
+  <h5>Dealer Score: {{dealerScore}}</h5>
+  {{#each dealerHand}}
+    {{value}}
+    {{suit}}
+  {{/each}}
   {{#if finished}}
     {{#if canBet}}
       <div {{bind-attr class=":form-group errors.bet:has-error"}}>
@@ -73,15 +75,3 @@
   {{/if}}
 </div>
 {{/each}}
-
-{{#with firstGame}}
-{{#if dealersTurn}}
-  <h3>Dealer's Turn</h3>
-{{/if}}
-<h3>Dealer Cards</h3>
-<h5>Dealer Score: {{dealerScore}}</h5>
-{{#each dealerHand}}
-  {{value}}
-  {{suit}}
-{{/each}}
-{{/with}}

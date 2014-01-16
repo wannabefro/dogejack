@@ -4,23 +4,23 @@ App.GamesController = Ember.ArrayController.extend({
   
   gridSize: function(){
     return 'col-md-' + (12 / this.get('content').length);
-  }.property('content'),
+  }.property('content.@each'),
 
   firstGame: function(){
-    return this.get('content')[0];
-  }.property('content'),
+    return this.get('content').get('lastObject');
+  }.property('content.@each'),
 
   totalBet: function(){
     games = this.get('content');
     return games.reduce(function(prev, game){
       return prev + game.get('bet');
     }, 0);
-  }.property('content', '@each.bet'),
+  }.property('content.@each'),
 
   allSplitHandsPlayed: function(){
     games = this.get('content');
-    return (games.length === games.filterBy('state', 'dealers_turn'));
-  }.property('content'),
+    return (games.length === games.filterBy('state', 'dealers_turn').length);
+  }.property('content.@each', '@each.state'),
 
   actions: {
     statistics: function(){

@@ -62,9 +62,12 @@ class Api::GamesController < ApplicationController
   end
 
   def dealer
-    if @games.any
-      @session.split_deal(@games)
-      render status: 200, json: @games
+    if @games.any?
+      if @session.split_deal(@games)
+        render status: 200, json: @games
+      else
+        render status: 500
+      end
     else
       @game.dealers_turn
       render status: 200, json: [@game]
@@ -86,7 +89,7 @@ class Api::GamesController < ApplicationController
   end
 
   def get_game
-    @game = @user.unfinished_games.take
+    @game = params[:id] ? Game.find(params[:id]) : @user.unfinished_games.take
   end
 
   def get_game_session

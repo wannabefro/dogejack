@@ -41,7 +41,20 @@ class GameSession < ActiveRecord::Base
   end
 
   def split_deal(games)
-    
+    if games.all?{|game|game.state == 'dealers_turn'}
+      first_game = Game.first
+      first_game.deal
+      games.each do |game|
+        game.dealer_cards_will_change!
+        game.update_attributes(dealer_cards: first_game.dealer_cards)
+        if first_game.state == 'finished' && game.state != 'finished'
+          game.finish
+        end
+      end
+      games
+    else
+      false
+    end
   end
 
   def played_cards

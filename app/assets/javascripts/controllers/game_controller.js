@@ -112,7 +112,8 @@ App.GameController = Ember.ObjectController.extend({
 
     hit: function(){
       var that = this;
-      $.get('/api/games/hit').then(function(response){
+      data = this.getProperties('id');
+      $.get('/api/games/hit', data).then(function(response){
         that.store.pushPayload('game', response);
       }, function(err){
       });
@@ -120,7 +121,8 @@ App.GameController = Ember.ObjectController.extend({
 
     stand: function(){
       var that = this;
-      $.get('/api/games/stand').then(function(response){
+      data = this.getProperties('id');
+      $.get('/api/games/stand', data).then(function(response){
         that.store.pushPayload('game', response);
       }, function(err){
       });
@@ -148,7 +150,7 @@ App.GameController = Ember.ObjectController.extend({
     double: function(){
       if (this.get('checkDouble')){
         this.set('controllers.application.errors', null);
-        data = this.getProperties('doubleBet');
+        data = this.getProperties('id', 'doubleBet');
         var that = this;
         $.get('/api/games/double', data).then(function(response){
           that.store.pushPayload('game', response);
