@@ -1,0 +1,85 @@
+{{#if showStatistics}}
+  {{#with firstGame}}
+  <h3>Shoe Penetration: {{gameSession.penetration}}%</h3>
+  <h3>High Cards: {{gameSession.high}}</h3>
+  <h3>Low Cards: {{gameSession.low}}</h3>
+  <h3>Running Count: {{gameSession.runningCount}}</h3>
+  <h3>True Count: {{gameSession.truecount}}</h3>
+  {{/with}}
+  <button class='btn btn-primary'{{action 'statistics'}}>Hide Statistics</button>
+{{else}}
+  <button class='btn btn-primary'{{action 'statistics'}}>Show Statistics</button>
+{{/if}}
+<h3>Current Bet: {{totalBet}}</h3>
+
+{{#each}}
+<div {{bind-attr class='controllers.games.gridSize'}}>
+  {{#if winner}}
+    <h2>{{winner}} Wins</h2>
+  {{/if}}
+  <h3>Player Cards</h3>
+  <h5>Player Score: {{playerScore}}</h5>
+  {{#each playerHand}}
+    {{value}}
+    {{suit}}
+  {{/each}}
+  {{#if canDeal}}
+  <div {{bind-attr class=":form-group errors.bet:has-error"}}>
+    <label for="">Place Your Bet</label>
+    {{input type="text" value=bet class="form-control"}}
+    {{#if errors.bet }}
+    <span class="help-block">{{format-error errors.bet}}</span>
+    {{/if}}
+  </div>
+  <button {{action 'deal'}} class='btn btn-block btn-primary btn-square'>Deal</button>
+  {{/if}}
+  {{#if canHit}}
+  {{#if canSplit}}
+    <button {{action 'split'}} class='btn btn-block btn-primary btn-square'>Split</button>
+  {{/if}}
+  {{#if canDouble}}
+  <button {{action 'willDouble'}} class='btn btn-block btn-primary btn-square'>Double</button>
+  {{#if doubling}}
+  <div {{bind-attr class=":form-group errors.doubleBet:has-error"}}>
+    <label for="">Double Amount</label>
+    {{input type="text" value=doubleBet class="form-control"}}
+    {{#if errors.bet }}
+    <span class="help-block">{{format-error errors.doubleBet}}</span>
+    {{/if}}
+  </div>
+  {{/if}}
+  {{/if}}
+  <button {{action 'hit'}} class='btn btn-block btn-primary btn-square'>Hit</button>
+  <button {{action 'stand'}} class='btn btn-block btn-primary btn-square'>Stand</button>
+  {{/if}}
+  {{#if dealersTurn}}
+    <h3>Dealer's Turn</h3>
+  {{/if}}
+  {{#if finished}}
+    {{#if canBet}}
+      <div {{bind-attr class=":form-group errors.bet:has-error"}}>
+      <label for="">Place Your Bet</label>
+      {{input type="text" value=bet class="form-control"}}
+      {{#if errors.bet }}
+      <span class="help-block">{{format-error errors.bet}}</span>
+      {{/if}}
+    </div>
+      <button {{action 'again'}} class='btn btn-block btn-primary btn-square'>Play again?</button>
+    {{else}}
+      <h3>Out of cash</h3>
+    {{/if}}
+  {{/if}}
+</div>
+{{/each}}
+
+{{#with firstGame}}
+{{#if dealersTurn}}
+  <h3>Dealer's Turn</h3>
+{{/if}}
+<h3>Dealer Cards</h3>
+<h5>Dealer Score: {{dealerScore}}</h5>
+{{#each dealerHand}}
+  {{value}}
+  {{suit}}
+{{/each}}
+{{/with}}

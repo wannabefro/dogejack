@@ -4,7 +4,7 @@ class Api::GamesController < ApplicationController
   before_action :get_game_session
   before_action :verify_user_token
   before_action :get_wallet, only: [:deal]
-  before_action :get_split_games, only: [:split]
+  before_action :get_split_games, only: [:split, :create]
 
   def create
     @game ||= Game.create!(user: @user, game_session: @session)
@@ -12,7 +12,9 @@ class Api::GamesController < ApplicationController
       @game_session = GameSession.create(user: @user)
       @game.update_attributes(game_session_id: @game_session.id)
     end
-    if @game
+    if @games.any?
+      render status: 200, json: @games
+    elsif @game
       render status: 200, json: [@game]
     else
       render status: 500

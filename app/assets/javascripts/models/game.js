@@ -8,8 +8,6 @@ App.Game = DS.Model.extend({
   winner: DS.attr(),
   bet: DS.attr(),
   split: DS.attr(),
-  splitCards: DS.attr('raw'),
-  splitBets: DS.attr('raw'),
   shoePenetration: DS.attr(),
   gameSession: DS.belongsTo('gameSession'),
   playerHand: function(){

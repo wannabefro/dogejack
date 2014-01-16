@@ -1,9 +1,8 @@
 App.GameController = Ember.ObjectController.extend({
-  needs: ['application'],
+  needs: ['application', 'games'],
   errors: null,
   betAmount: null,
   doubling: false,
-  showStatistics: false,
 
   canSplit: function(){
     if (this.get('playerCards') != undefined && this.get('playerCards').length === 2 && this.get('sameValue')){
@@ -163,10 +162,6 @@ App.GameController = Ember.ObjectController.extend({
       } else {
         this.toggleProperty('doubling');
       }
-    },
-
-    statistics: function(){
-      this.toggleProperty('showStatistics');
     }
   }
 });
