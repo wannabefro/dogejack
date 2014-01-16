@@ -4,6 +4,7 @@ class Api::GamesController < ApplicationController
   before_action :get_game_session
   before_action :verify_user_token
   before_action :get_wallet, only: [:deal]
+  before_action :get_split_games, only: [:split]
 
   def create
     @game ||= Game.create!(user: @user, game_session: @session)
@@ -26,10 +27,9 @@ class Api::GamesController < ApplicationController
     render status: 200, json: [@game]
   end
 
-  # use gamesession to create new games for the split as opposed to being handled on the game class
   def split
-    if @game.split
-      render status: 200, json: [@game]
+    if @session.split(@game)
+      render status: 200, json: @games
     else
       render status: 500, json: {errors: 'Sorry something went wrong with the split'}
     end
@@ -72,6 +72,10 @@ class Api::GamesController < ApplicationController
 
   def get_user
     @user = User.find_by_authentication_token(request.authorization.split(' ')[1])
+  end
+
+  def get_split_games
+    @games = @user.unfinished_games.where(split: true)
   end
 
   def get_game

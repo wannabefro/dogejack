@@ -25,6 +25,21 @@ class GameSession < ActiveRecord::Base
     card.card
   end
 
+  def split(game)
+    if game.can_split?(game.player_cards)
+      game.player_cards_will_change!
+      split_card = game.player_cards.pop
+      game.update_attributes(player_cards: game.player_cards, split: true)
+      split_game = Game.create(game_session_id: id, user_id: game.user.id, bet: game.bet, dealer_cards: game.dealer_cards, player_cards:  [split_card], split: true)
+      game.dealt
+      split_game.dealt
+      game.hit
+      split_game.hit
+    else
+      false
+    end
+  end
+
   def played_cards
     cards.references(:deck_cards).where(deck_cards: {played: true}).pluck(:value)
   end

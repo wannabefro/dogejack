@@ -85,6 +85,10 @@ class Game < ActiveRecord::Base
     end
   end
 
+  def can_split?(cards)
+    cards.map{|c| Card.find(c.to_i).value}.uniq.length == 1
+  end
+
   private
 
   def canDouble(amount)
