@@ -67,6 +67,11 @@ App.GameController = Ember.ObjectController.extend({
 
   dealersTurn: function(){
     var that = this;
+    if (this.get('split') === true){
+      if (this.get('controllers.games.allSplitHandsPlayed') === false){
+        return false;
+      }
+    }
     if (this.get('state') === 'dealers_turn'){
       if (!this.dealersPlay){
         this.dealersPlay = setInterval(function(){that.send('getDealersCard');}, 750);

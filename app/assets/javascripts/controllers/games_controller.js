@@ -17,6 +17,11 @@ App.GamesController = Ember.ArrayController.extend({
     }, 0);
   }.property('content', '@each.bet'),
 
+  allSplitHandsPlayed: function(){
+    games = this.get('content');
+    return (games.length === games.filterBy('state', 'dealers_turn'));
+  }.property('content'),
+
   actions: {
     statistics: function(){
       this.toggleProperty('showStatistics');

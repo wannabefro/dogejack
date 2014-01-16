@@ -40,6 +40,10 @@ class GameSession < ActiveRecord::Base
     end
   end
 
+  def split_deal(games)
+    
+  end
+
   def played_cards
     cards.references(:deck_cards).where(deck_cards: {played: true}).pluck(:value)
   end

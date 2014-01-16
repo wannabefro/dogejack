@@ -5,10 +5,11 @@ App.GamesRoute = Ember.Route.extend(Ember.SimpleAuth.AuthenticatedRouteMixin, {
       that.store.pushPayload('game', response);
       if (response.games[0].split == true){
         games = that.store.filter('game').filterBy('split').filterBy('winner', null);
+        that.controllerFor('games').set('content', games);
       } else {
-      games = that.store.getById('game', response.games[0].id);
+        games = that.store.getById('game', response.games[0].id);
+        that.controllerFor('games').set('content', [games]);
       }
-      that.controllerFor('games').set('content', [games]);
     }, function(err){
       that.controllerFor('application').set('errors', 'Something went wrong. Please try again');
     });

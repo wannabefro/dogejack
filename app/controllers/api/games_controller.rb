@@ -4,7 +4,7 @@ class Api::GamesController < ApplicationController
   before_action :get_game_session
   before_action :verify_user_token
   before_action :get_wallet, only: [:deal]
-  before_action :get_split_games, only: [:split, :create]
+  before_action :get_split_games, only: [:dealer, :split, :create]
 
   def create
     @game ||= Game.create!(user: @user, game_session: @session)
@@ -62,8 +62,13 @@ class Api::GamesController < ApplicationController
   end
 
   def dealer
-    @game.dealers_turn
-    render status: 200, json: [@game]
+    if @games.any
+      @session.split_deal(@games)
+      render status: 200, json: @games
+    else
+      @game.dealers_turn
+      render status: 200, json: [@game]
+    end
   end
 
   private
