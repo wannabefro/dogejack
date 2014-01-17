@@ -22,7 +22,7 @@ describe GameSession do
       game_session.split(game)
       expect(Game.count).to eql(2)
       expect(Game.first.player_cards.length).to eql(2)
-      expect(Game.last.player_cards.length).to eql(2)
+      expect(Game.last.player_cards.length).to eql(1)
     end
 
     context 'dealing to split hands' do
