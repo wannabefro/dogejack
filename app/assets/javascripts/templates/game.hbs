@@ -40,6 +40,9 @@
 {{#if canSplit}}
   <button {{action 'split'}} class='btn btn-block btn-primary btn-square'>Split</button>
 {{/if}}
+{{#if canSurrender}}
+  <button {{action 'surrender'}}>Surrender</button>
+{{/if}}
 {{#if canDouble}}
 <button {{action 'willDouble'}} class='btn btn-block btn-primary btn-square'>Double</button>
 {{#if doubling}}
