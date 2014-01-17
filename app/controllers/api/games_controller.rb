@@ -4,6 +4,7 @@ class Api::GamesController < ApplicationController
   before_action :get_game_session
   before_action :verify_user_token
   before_action :get_wallet, only: [:deal]
+  before_action :get_split_games, only: [:dealer, :split, :create]
 
   def create
     @game ||= Game.create!(user: @user, game_session: @session)
@@ -11,7 +12,9 @@ class Api::GamesController < ApplicationController
       @game_session = GameSession.create(user: @user)
       @game.update_attributes(game_session_id: @game_session.id)
     end
-    if @game
+    if @games.any?
+      render status: 200, json: @games
+    elsif @game
       render status: 200, json: [@game]
     else
       render status: 500
@@ -27,8 +30,8 @@ class Api::GamesController < ApplicationController
   end
 
   def split
-    if @game.split
-      render status: 200, json: [@game]
+    if @session.split(@game)
+      render status: 200, json: @games
     else
       render status: 500, json: {errors: 'Sorry something went wrong with the split'}
     end
@@ -58,9 +61,25 @@ class Api::GamesController < ApplicationController
     end
   end
 
+  def surrender
+    if @game.surrender
+      render status: 200, json: [@game]
+    else
+      render status: 500
+    end
+  end
+
   def dealer
-    @game.dealers_turn
-    render status: 200, json: [@game]
+    if @games.any?
+      if @session.split_deal(@games)
+        render status: 200, json: @games
+      else
+        render status: 500
+      end
+    else
+      @game.dealers_turn
+      render status: 200, json: [@game]
+    end
   end
 
   private
@@ -73,8 +92,12 @@ class Api::GamesController < ApplicationController
     @user = User.find_by_authentication_token(request.authorization.split(' ')[1])
   end
 
+  def get_split_games
+    @games = @user.unfinished_games.where(split: true)
+  end
+
   def get_game
-    @game = @user.unfinished_games.take
+    @game = params[:id] ? Game.find(params[:id]) : @user.unfinished_games.take
   end
 
   def get_game_session

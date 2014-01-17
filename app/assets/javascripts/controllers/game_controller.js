@@ -1,12 +1,17 @@
 App.GameController = Ember.ObjectController.extend({
-  needs: ['application'],
+  needs: ['application', 'games'],
   errors: null,
   betAmount: null,
   doubling: false,
-  showStatistics: false,
 
   canSplit: function(){
     if (this.get('playerCards') != undefined && this.get('playerCards').length === 2 && this.get('sameValue')){
+      return true;
+    }
+  }.property('playerCards'),
+
+  canSurrender: function(){
+    if (this.get('playerCards').length == 2){
       return true;
     }
   }.property('playerCards'),
@@ -68,6 +73,11 @@ App.GameController = Ember.ObjectController.extend({
 
   dealersTurn: function(){
     var that = this;
+    if (this.get('split') === true){
+      if (this.get('controllers.games.allSplitHandsPlayed') === false){
+        return false;
+      }
+    }
     if (this.get('state') === 'dealers_turn'){
       if (!this.dealersPlay){
         this.dealersPlay = setInterval(function(){that.send('getDealersCard');}, 750);
@@ -108,7 +118,8 @@ App.GameController = Ember.ObjectController.extend({
 
     hit: function(){
       var that = this;
-      $.get('/api/games/hit').then(function(response){
+      data = this.getProperties('id');
+      $.get('/api/games/hit', data).then(function(response){
         that.store.pushPayload('game', response);
       }, function(err){
       });
@@ -116,7 +127,8 @@ App.GameController = Ember.ObjectController.extend({
 
     stand: function(){
       var that = this;
-      $.get('/api/games/stand').then(function(response){
+      data = this.getProperties('id');
+      $.get('/api/games/stand', data).then(function(response){
         that.store.pushPayload('game', response);
       }, function(err){
       });
@@ -137,6 +149,7 @@ App.GameController = Ember.ObjectController.extend({
     split: function(){
       var that = this;
       $.get('/api/games/split').then(function(response){
+        that.store.pushPayload('game', response);
       }, function(err){
       });
     },
@@ -144,7 +157,7 @@ App.GameController = Ember.ObjectController.extend({
     double: function(){
       if (this.get('checkDouble')){
         this.set('controllers.application.errors', null);
-        data = this.getProperties('doubleBet');
+        data = this.getProperties('id', 'doubleBet');
         var that = this;
         $.get('/api/games/double', data).then(function(response){
           that.store.pushPayload('game', response);
@@ -165,8 +178,15 @@ App.GameController = Ember.ObjectController.extend({
       }
     },
 
-    statistics: function(){
-      this.toggleProperty('showStatistics');
+    surrender: function(){
+      if (this.get('canSurrender') == true){
+        var that = this;
+        data = this.getProperties('id');
+        $.get('/api/games/surrender', data).then(function(response){
+          that.store.pushPayload('game', response);
+        }, function(err){
+        });
+      }
     }
   }
 });
