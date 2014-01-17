@@ -143,6 +143,7 @@ App.GameController = Ember.ObjectController.extend({
     split: function(){
       var that = this;
       $.get('/api/games/split').then(function(response){
+        that.store.pushPayload('game', response);
       }, function(err){
       });
     },

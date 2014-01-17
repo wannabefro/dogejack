@@ -34,7 +34,6 @@ class GameSession < ActiveRecord::Base
       game.dealt
       split_game.dealt
       game.hit
-      split_game.hit
     else
       false
     end
